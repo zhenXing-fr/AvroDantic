@@ -1,0 +1,39 @@
+[project]
+name = "avrodantic"
+version = "0.1.0"
+description = "A Python library for seamless schema evolution using Avro and Pydantic."
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }
+]
+dependencies = [
+    "pydantic>=2.0.0",
+    "fastavro>=1.7.0",
+    "pyspark>=3.0.0",
+    "requests>=2.25.0", # For remote schema registry
+    "confluent-kafka>=2.0.0", # Optional: For Kafka integration
+    "pytest>=8.3.5",
+]
+requires-python = ">=3.8"
+
+[project.optional-dependencies]
+dev = [
+    "black>=23.0.0",  # Code formatting
+    "flake8>=5.0.0",  # Linting
+    "pytest>=7.0.0",  # Testing
+    "uv>=0.1.0",     # Package management
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-v"
+testpaths = [
+    "tests",
+]
+
+[build-system]
+requires = ["uv_build"]
+build-backend = "uv_build"
