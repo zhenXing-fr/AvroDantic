@@ -12,6 +12,7 @@ dependencies = [
     "requests>=2.25.0", # For remote schema registry
     "confluent-kafka>=2.0.0", # Optional: For Kafka integration
     "pytest>=8.3.5",
+    "pre-commit>=3.5.0",
 ]
 requires-python = ">=3.8"
 
