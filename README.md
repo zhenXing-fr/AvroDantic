@@ -45,19 +45,3 @@ sequenceDiagram
         UseCase--x User: Propagate error
     end
 
-
-```mermaid
-sequenceDiagram
-    participant Spark as PySpark
-    participant Kafka
-    
-    User->>Spark: read_avro(data_path)
-    Spark->>Registry: get_schema(schema_id)
-    Registry-->>Spark: AvroSchema
-    Spark->>Serializer: deserialize(avro_bytes, schema)
-    Serializer-->>Spark: Python dict
-    
-    User->>Kafka: produce(topic, avro_bytes)
-    Kafka->>Registry: get_schema(schema_id)
-    Registry-->>Kafka: AvroSchema
-    Kafka->>Serializer: deserialize(avro_bytes, schema)
