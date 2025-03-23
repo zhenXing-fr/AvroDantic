@@ -1,8 +1,11 @@
 from enum import Enum
-from typing import Dict, List, Optional, Union, Type, Any
-from pydantic import BaseModel, create_model, Field
+from typing import Any, Dict, List, Optional, Type, Union
+
+from pydantic import BaseModel, Field, create_model
+
 from avrodantic.core.entities.avro_schema import AvroSchema
-from avrodantic.core.exceptions import SchemaValidationError
+from avrodantic.exceptions import SchemaValidationError
+
 
 class PydanticModelGenerator:
     def __init__(self):
@@ -22,15 +25,15 @@ class PydanticModelGenerator:
 
     def _handle_complex_type(self, schema: dict) -> Type:
         avro_type = schema["type"]
-        
+
         if avro_type == "record":
             return self._generate_record_model(schema)
         elif avro_type == "enum":
             return self._generate_enum_model(schema)
         elif avro_type == "array":
-            return List[self._parse_type(schema["items"])]
+            return List[self._parse_type(schema["items"])]  # noqa: F821
         elif avro_type == "map":
-            return Dict[str, self._parse_type(schema["values"])]
+            return Dict[str, self._parse_type(schema["values"])]  # noqa: F821
         elif avro_type == "fixed":
             return bytes  # Or use constrained types for fixed-length validation
         else:
@@ -38,7 +41,7 @@ class PydanticModelGenerator:
 
     def _generate_record_model(self, schema: dict) -> Type[BaseModel]:
         name = self._get_qualified_name(schema)
-        
+
         if name in self._generated_models:
             return self._generated_models[name]
 
@@ -47,7 +50,7 @@ class PydanticModelGenerator:
             field_name = field["name"]
             field_type = self._parse_type(field["type"])
             default = field.get("default")
-            
+
             if default is not None:
                 fields[field_name] = (field_type, Field(default=default))
             else:
@@ -78,7 +81,9 @@ class PydanticModelGenerator:
             elif len(non_null_types) == 1:
                 return Optional[self._parse_type(non_null_types[0])]
             else:
-                return Optional[Union[tuple(self._parse_type(t) for t in non_null_types)]]
+                return Optional[
+                    Union[tuple(self._parse_type(t) for t in non_null_types)]
+                ]
         else:
             return Union[tuple(self._parse_type(t) for t in types)]
 
