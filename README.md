@@ -44,9 +44,9 @@ sequenceDiagram
         Serializer--x UseCase: SerializationError
         UseCase--x User: Propagate error
     end
-
+---
 For downstream users :
-
+---
 ```mermaid
 sequenceDiagram
     participant Spark as PySpark
